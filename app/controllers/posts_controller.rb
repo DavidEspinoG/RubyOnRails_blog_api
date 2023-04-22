@@ -1,15 +1,15 @@
 class PostsController < ApplicationController
-
-rescue_from  ActiveRecord::RecordInvalid do |e|
-  render json: { error: e.message}, status: :unprocessable_entity
-end
-# rescue_from  Exception do |e|
-#   render json: { error: e.message}, status: :internal_error
-# end
+  rescue_from  ActiveRecord::RecordInvalid do |e|
+    render json: { error: e.message}, status: :unprocessable_entity
+  end
 
   def index
-    @post = Post.where(published: true)
-    render json: @post, status: :ok
+    @posts = Post.where(published: true)
+    if !params[:search].nil? && params[:search].present?
+      @posts = @posts.where("title like '%#{params[:search]}%'")
+    end
+
+    render json: @posts, status: :ok
   end
   # GET /posts/{id} 
   def show
