@@ -13,6 +13,8 @@ class PostsController < ApplicationController
     @posts = Post.where(published: true)
     if !params[:search].nil? && params[:search].present?
       @posts = @posts.where("title like '%#{params[:search]}%'")
+      ## To Do: fix the following line for implementing cache
+      # @posts = PostsSearchService.search(@posts, "title like '%#{params[:search]}%'")
     end
 
     render json: @posts.includes(:user), status: :ok
